@@ -3,6 +3,7 @@ package com.sar.psapp.service.impl;
 import com.sar.psapp.dto.Card;
 import com.sar.psapp.dto.StartProcess;
 import com.sar.psapp.service.ParserService;
+import com.sar.psapp.service.buttonsHandlers.ButtonHandler;
 import com.sar.psapp.service.validation.GoodsValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,6 +27,9 @@ public class MegaMarketImpl implements ParserService {
     @Autowired
     private GoodsValidator goodsValidator;
 
+    @Autowired
+    private ButtonHandler buttonHandler;
+
     @Override
     public List<Card> parseBySettings(StartProcess settings) {
         WebDriver driver = new ChromeDriver();
@@ -33,8 +37,10 @@ public class MegaMarketImpl implements ParserService {
         driver.get(settings.getCategory().getMegaMarketUrl());
 
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(10000));
-        WebElement submitButton = driver.findElement(By.className("header-region-selector-view__footer-ok"));
-        submitButton.click();
+
+        buttonHandler.handleAgeButton(driver);
+        buttonHandler.handleRegionButton(driver);
+
         List<Card> cardsResponse = new ArrayList<>();
         Long start = System.currentTimeMillis();
         Document doc = Jsoup.parse(driver.getPageSource());
