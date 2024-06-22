@@ -19,9 +19,7 @@ public class GoodsValidator {
             }
         }
         if(settings.getMinProductPrice() != null){
-            if(card.getCardPrice() < settings.getMinProductPrice()){
-                return false;
-            }
+            return card.getCardPrice() >= settings.getMinProductPrice();
         }
         return true;
     }
