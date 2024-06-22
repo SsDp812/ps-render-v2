@@ -42,7 +42,7 @@ public class MegaMarketImpl implements ParserService {
         for (Element card : elements) {
             Card cardResponse = new Card();
             try {
-                Elements bonus = card.select(".catalog-item-mobile");
+                Elements bonus = card.select(".item-bonus");
                 cardResponse.setCardBonus(Long.parseLong(bonus.get(0).text()));
             } catch (Exception ex) {
                 cardResponse.setCardBonus(0L);
