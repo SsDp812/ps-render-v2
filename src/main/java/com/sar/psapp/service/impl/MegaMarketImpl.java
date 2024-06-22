@@ -69,6 +69,7 @@ public class MegaMarketImpl implements ParserService {
             }
 
         }
+        driver.quit();
         Long stop = System.currentTimeMillis();
         System.out.println(stop - start);
         return cardsResponse;
