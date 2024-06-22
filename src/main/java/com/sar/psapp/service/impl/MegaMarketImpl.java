@@ -14,6 +14,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -24,22 +25,48 @@ import java.util.List;
 public class MegaMarketImpl implements ParserService {
     private String MEGA_MARKET_BASE_URL = "https://megamarket.ru/";
 
+    @Value("${app.conf.wait-time}")
+    private int waitTime;
+
     @Autowired
     private GoodsValidator goodsValidator;
 
     @Autowired
     private ButtonHandler buttonHandler;
 
+    // parseBySettings инициализирует WebDriver и в цикле вызывает парсинг каждой страницы
     @Override
     public List<Card> parseBySettings(StartProcess settings) {
+        int pageLimit = settings.getPageLimit();
+
+        List<Card> cardsList = new ArrayList<>();
+
         WebDriver driver = new ChromeDriver();
+        String url = settings.getCategory().getMegaMarketUrl();
 
-        driver.get(settings.getCategory().getMegaMarketUrl());
+        for (int pageNumber = 1; pageNumber <= pageLimit; pageNumber++) {
+            if (pageNumber > 1) {
+                url = settings.getCategory().getMegaMarketUrl() + "page-" + pageNumber + "/";
+            }
+            driver.get(url);
+            System.out.println("URL текущей страницы: " + driver.getCurrentUrl());
+            cardsList.addAll(this.parsePage(driver, settings));
+        }
 
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(10000));
+        driver.quit();
 
-        buttonHandler.handleAgeButton(driver);
-        buttonHandler.handleRegionButton(driver);
+        return cardsList;
+    }
+
+    // parsePage парсит страницу
+    @Override
+    public List<Card> parsePage(WebDriver driver, StartProcess settings) {
+        int pageLimit = settings.getPageLimit();
+
+        String currentUrl = driver.getCurrentUrl();
+        if (currentUrl.equals(settings.getCategory().getMegaMarketUrl())) {
+            buttonHandler.handleAllButtons(driver, waitTime, pageLimit);
+        }
 
         List<Card> cardsResponse = new ArrayList<>();
         Long start = System.currentTimeMillis();
@@ -75,7 +102,6 @@ public class MegaMarketImpl implements ParserService {
             }
 
         }
-        driver.quit();
         Long stop = System.currentTimeMillis();
         System.out.println(stop - start);
         return cardsResponse;

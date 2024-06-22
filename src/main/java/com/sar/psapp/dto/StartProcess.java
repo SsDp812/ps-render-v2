@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class StartProcess {
     private Provider provider;
     private Category category;
+    private int pageLimit;
     private Long bonusPerc;
     private Long minProductPrice;
     private Long maxProductPrice;

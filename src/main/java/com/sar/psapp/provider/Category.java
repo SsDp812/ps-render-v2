@@ -5,6 +5,7 @@ public enum Category {
     TECH("Техника", "https://megamarket.ru/catalog/elektronika/", null),
     SEX("Секс игрушки", "https://megamarket.ru/catalog/tovary-dlya-vzroslyh/", null),
     PRODUCTS("Продукты", "https://megamarket.ru/catalog/produkty-pitaniya/", null),
+    COMPUTER_DISPLAYS("Компьютерные мониторы", "https://megamarket.ru/catalog/monitory/", null)
     ;
     private String name, megaMarketUrl, yandexMarketUrl;
 
