@@ -3,6 +3,7 @@ package com.sar.psapp.service.impl;
 import com.sar.psapp.dto.Card;
 import com.sar.psapp.dto.StartProcess;
 import com.sar.psapp.service.ParserService;
+import com.sar.psapp.service.validation.GoodsValidator;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -11,6 +12,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -20,6 +22,10 @@ import java.util.List;
 @Component
 public class MegaMarketImpl implements ParserService {
     private String MEGA_MARKET_BASE_URL = "https://megamarket.ru/";
+
+    @Autowired
+    private GoodsValidator goodsValidator;
+
     @Override
     public List<Card> parseBySettings(StartProcess settings) {
         WebDriver driver = new ChromeDriver();
@@ -32,13 +38,10 @@ public class MegaMarketImpl implements ParserService {
         List<Card> cardsResponse = new ArrayList<>();
         Long start = System.currentTimeMillis();
         Document doc = Jsoup.parse(driver.getPageSource());
-        String title = doc.title();
         Elements elements = doc.select(".catalog-item-mobile");
-        //List<WebElement> cards = driver.findElements(By.className("catalog-item-mobile"));
         for (Element card : elements) {
             Card cardResponse = new Card();
             try {
-                //bonus = card.findElement(By.className("item-bonus"));
                 Elements bonus = card.select(".catalog-item-mobile");
                 cardResponse.setCardBonus(Long.parseLong(bonus.get(0).text()));
             } catch (Exception ex) {
@@ -60,7 +63,8 @@ public class MegaMarketImpl implements ParserService {
             Element link = name.get(0).selectFirst("a.ddl_product_link");
             String url = link.attr("href");
             cardResponse.setUrl(MEGA_MARKET_BASE_URL + url);
-            if(((float)cardResponse.getCardBonus() / ((float)(cardResponse.getCardPrice() / 100))) >= settings.getBonusPerc()){
+
+            if(goodsValidator.validateForBenefit(cardResponse,settings)){
                 cardsResponse.add(cardResponse);
             }
 
