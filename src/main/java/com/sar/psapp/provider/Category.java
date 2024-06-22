@@ -7,7 +7,9 @@ public enum Category {
     PRODUCTS("Продукты", "https://megamarket.ru/catalog/produkty-pitaniya/", null),
     COMPUTER_DISPLAYS("Компьютерные мониторы", "https://megamarket.ru/catalog/monitory/", null)
     ;
-    private String name, megaMarketUrl, yandexMarketUrl;
+    private final String name;
+    private final String megaMarketUrl;
+    private final String yandexMarketUrl;
 
     Category(String name, String megaMarketUrl, String yandexMarketUrl) {
         this.name = name;

@@ -4,7 +4,9 @@ import com.sar.psapp.dto.Card;
 import com.sar.psapp.dto.StartProcess;
 import com.sar.psapp.service.ParserService;
 import com.sar.psapp.service.buttonsHandlers.ButtonHandler;
+import com.sar.psapp.service.fileHandler.FileHandler;
 import com.sar.psapp.service.validation.GoodsValidator;
+import org.checkerframework.checker.units.qual.A;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,7 +25,7 @@ import java.util.List;
 
 @Component
 public class MegaMarketImpl implements ParserService {
-    private String MEGA_MARKET_BASE_URL = "https://megamarket.ru/";
+    private final String MEGA_MARKET_BASE_URL = "https://megamarket.ru/";
 
     @Value("${app.conf.wait-time}")
     private int waitTime;
@@ -33,6 +35,9 @@ public class MegaMarketImpl implements ParserService {
 
     @Autowired
     private ButtonHandler buttonHandler;
+
+    @Autowired
+    private FileHandler fileHandler;
 
     // parseBySettings инициализирует WebDriver и в цикле вызывает парсинг каждой страницы
     @Override
@@ -54,6 +59,8 @@ public class MegaMarketImpl implements ParserService {
         }
 
         driver.quit();
+
+        fileHandler.csvFileHandler(cardsList);
 
         return cardsList;
     }
