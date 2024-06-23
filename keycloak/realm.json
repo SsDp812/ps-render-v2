@@ -1,0 +1,106 @@
+{
+  "realm": "parser-service-realm",
+  "enabled": true,
+  "registrationAllowed": true,
+  "registrationFlow": "registration",
+  "clientScopes": [
+    {
+      "name": "manage-users",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": true
+      }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "parser-service-client",
+      "defaultClientScopes": [
+        "manage-users"
+      ],
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "my-client-secret",
+      "redirectUris": [
+        "http://localhost:8081/*",
+        "http://localhost:8084/*",
+        "http://localhost:8085/*",
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http:/localhost:8081",
+        "http:/localhost:8084",
+        "http:/localhost:8085",
+        "http://localhost:3000"
+      ],
+      "defaultRoles": [
+        "user"
+      ],
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "publicClient": true,
+      "bearerOnly": false,
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "Username Mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "my-service-account",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "my-client-secret",
+      "defaultRoles": [
+        "user"
+      ],
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true,
+      "bearerOnly": false,
+      "protocol": "openid-connect"
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "Regular user role",
+        "composite": false
+      },
+      {
+        "name": "admin",
+        "description": "Admin user role",
+        "composite": false
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "adminadmin",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "rootroot",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ]
+    }
+  ]
+}
