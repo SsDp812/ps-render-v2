@@ -1,0 +1,8 @@
+CREATE DATABASE keycloak;
+GRANT ALL PRIVILEGES ON DATABASE keycloak TO postgres;
+
+CREATE DATABASE parser_db;
+GRANT ALL PRIVILEGES ON DATABASE parser_db TO postgres;
+
+
+
