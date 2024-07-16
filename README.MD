@@ -1,5 +1,9 @@
 # Getting Started
 
+## Клиент:
+
+https://github.com/2immons/ps-parser-v2-client
+
 # Админка
 
 Логин: adminadmin
